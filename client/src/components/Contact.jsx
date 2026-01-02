@@ -3,12 +3,13 @@ import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 
 const Contact = ({ onOpenProBono }) => {
-  const [formData, setFormData] = useState({
+  const EMPTY_FORM = {
     name: "",
     email: "",
     stage: "Idea / Pre-Revenue",
-  });
+  };
 
+  const [formData, setFormData] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -18,36 +19,34 @@ const Contact = ({ onOpenProBono }) => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError(false);
+    e.preventDefault();
+    setLoading(true);
+    setError(false);
 
-  try {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/contact`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      }
-    );
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/contact`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
-    if (!res.ok) throw new Error("Failed");
+      if (!res.ok) throw new Error("Failed");
 
-    // 🔥 IMPORTANT ORDER
-    setLoading(false);
-    setSuccess(true);
+      // ✅ CLEAR FORM FIRST
+      setFormData(EMPTY_FORM);
 
-    setFormData({
-      name: "",
-      email: "",
-      stage: "Idea / Pre-Revenue",
-    });
-  } catch (err) {
-    setLoading(false);
-    setError(true);
-  }
-};
+      // ✅ THEN UPDATE UI STATE
+      setLoading(false);
+      setSuccess(true);
+    } catch (err) {
+      setLoading(false);
+      setError(true);
+    }
+  };
+
   return (
     <section id="contact" className="py-32 bg-neutral-950 relative overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-full bg-amber-900/5 blur-[120px] pointer-events-none" />
@@ -68,7 +67,6 @@ const Contact = ({ onOpenProBono }) => {
             our systems.
           </p>
 
-          {/* 👇 FORM OR SUCCESS MESSAGE */}
           {!success ? (
             <form
               onSubmit={handleSubmit}
