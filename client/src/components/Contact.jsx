@@ -18,35 +18,36 @@ const Contact = ({ onOpenProBono }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(false);
+  e.preventDefault();
+  setLoading(true);
+  setError(false);
 
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/contact`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
+  try {
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/contact`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      }
+    );
 
-      if (!res.ok) throw new Error("Failed");
+    if (!res.ok) throw new Error("Failed");
 
-      setSuccess(true);
-      setFormData({
-        name: "",
-        email: "",
-        stage: "Idea / Pre-Revenue",
-      });
-    } catch (err) {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+    // 🔥 IMPORTANT ORDER
+    setLoading(false);
+    setSuccess(true);
 
+    setFormData({
+      name: "",
+      email: "",
+      stage: "Idea / Pre-Revenue",
+    });
+  } catch (err) {
+    setLoading(false);
+    setError(true);
+  }
+};
   return (
     <section id="contact" className="py-32 bg-neutral-950 relative overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-full bg-amber-900/5 blur-[120px] pointer-events-none" />
