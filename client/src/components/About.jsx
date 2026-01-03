@@ -12,7 +12,7 @@ const About = () => {
             {/* Image Container */}
             <div className="aspect-square relative overflow-hidden bg-neutral-800">
               <img 
-                src="https://res.cloudinary.com/dbaexdgd3/image/upload/v1767427516/Cresia_logo_zq6inh.png" 
+                src="https://res.cloudinary.com/dbaexdgd3/image/upload/v1767427992/Cresia_qhf1bs.png" 
                 alt="Paridhi and Nandinee, Founders of CRESIA" 
                 className="w-full h-full object-cover"
               />
