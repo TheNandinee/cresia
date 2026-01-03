@@ -151,7 +151,7 @@ const ProBonoPage = ({ onBack }) => {
               Why We Run This Program
             </h3>
             <p className="text-neutral-400 mb-10 leading-relaxed">
-              Many strong founders fail early — not because of weak ideas, but because of weak foundations. CRESIA exists to change that.
+              Many strong founders fail early, not because of weak ideas, but because of weak foundations. CRESIA exists to change that.
             </p>
 
             <a
