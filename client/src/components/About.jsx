@@ -51,7 +51,7 @@ const About = () => {
                   A
                 </div>
                 <div>
-                  <p className="text-white font-medium font-serif">Paridhi & Nandin/ee</p>
+                  <p className="text-white font-medium font-serif">Paridhi & Nandinee</p>
                   <p className="text-neutral-500 text-sm font-sans">
                     Founders, CRESIA
                   </p>
