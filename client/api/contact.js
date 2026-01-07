@@ -1,4 +1,4 @@
-import { getDB } from "./_lib/db";
+import { getDB } from "./_lib/db.js";
 import nodemailer from "nodemailer";
 
 // --------------------
