@@ -20,5 +20,5 @@ clientPromise = global._mongoClientPromise;
 
 export async function getDB() {
   const client = await clientPromise;
-  return client.db("cresia");
+  return client.db("Cresia");
 }
