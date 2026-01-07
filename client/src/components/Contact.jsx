@@ -9,49 +9,71 @@ const Contact = ({ onOpenProBono }) => {
     stage: "Idea / Pre-Revenue",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(false);
-    setSuccess(false);
+
+    setIsSubmitting(true);
+    setError(null);
+    setSubmitted(false);
 
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/contact`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
-
-      if (!res.ok) throw new Error("Failed");
-
-      // ✅ CLEAR FORM INPUTS
-      setFormData({
-        name: "",
-        email: "",
-        stage: "Idea / Pre-Revenue",
+      // ✅ RELATIVE PATH — WORKS IN PROD + LOCAL
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          stage: formData.stage,
+        }),
       });
 
-      setSuccess(true);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.error || "Submission failed");
+      }
+
+      if (data.success) {
+        setSubmitted(true);
+
+        // Optional: reset form after short delay
+        setTimeout(() => {
+          setFormData({
+            name: "",
+            email: "",
+            stage: "Idea / Pre-Revenue",
+          });
+        }, 2000);
+      } else {
+        throw new Error(data?.error || "Submission failed");
+      }
     } catch (err) {
-      setError(true);
+      console.error("Form submission error:", err);
+      setError(err.message || "Something went wrong. Please try again.");
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <section id="contact" className="py-32 bg-neutral-950 relative overflow-hidden">
+    <section
+      id="contact"
+      className="py-32 bg-neutral-950 relative overflow-hidden"
+    >
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-full bg-amber-900/5 blur-[120px] pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-6 relative z-10">
@@ -71,7 +93,7 @@ const Contact = ({ onOpenProBono }) => {
             our systems.
           </p>
 
-          {/* FORM (ALWAYS MOUNTED) */}
+          {/* FORM */}
           <form
             onSubmit={handleSubmit}
             className="max-w-md mx-auto space-y-4 text-left font-sans"
@@ -124,23 +146,25 @@ const Contact = ({ onOpenProBono }) => {
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full bg-white text-neutral-950 font-bold py-4 mt-4 hover:bg-neutral-200 transition-colors flex items-center justify-center space-x-2"
+              disabled={isSubmitting}
+              className="w-full bg-white text-neutral-950 font-bold py-4 mt-4 hover:bg-neutral-200 transition-colors flex items-center justify-center space-x-2 disabled:opacity-60"
             >
-              <span>{loading ? "Submitting..." : "Request Discovery Call"}</span>
+              <span>
+                {isSubmitting ? "Submitting..." : "Request Discovery Call"}
+              </span>
               <ChevronRight size={16} />
             </button>
 
             {/* STATUS MESSAGES */}
-            {success && (
+            {submitted && (
               <p className="text-green-500 text-sm text-center mt-4">
-                Request submitted successfully.
+                Thank you. We’ll be in touch shortly.
               </p>
             )}
 
             {error && (
               <p className="text-red-500 text-sm text-center mt-4">
-                Something went wrong. Please try again.
+                {error}
               </p>
             )}
           </form>
@@ -156,7 +180,7 @@ const Contact = ({ onOpenProBono }) => {
           </p>
         </motion.div>
 
-        {/* ✅ PRO BONO PROMO — RESTORED */}
+        {/* PRO BONO PROMO */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
